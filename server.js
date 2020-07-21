@@ -37,13 +37,20 @@ server.on("connection", socket => {
     socket.on("new-message", async (jwt, message) => {
         try{
           await apiClient.insertMessage(jwt, message);
-          const rb = await rabbitConsumer.rabbitConsumer();
-          const mg = await mongoConsumer.mongoConsumer();
-          console.log("----", {rb})
         }
         catch(err){
           console.log(err);
         }
+    });
+
+    socket.on("rabbit-message", rabbitMessage => {
+      socket.emit("send-rabbit-message-to-client", rabbitMessage);
+      socket.broadcast.emit("send-rabbit-message-to-client", rabbitMessage);
+    });
+
+    socket.on("mongo-message", mongoMessage => {
+      socket.emit("send-mongo-message-to-client", mongoMessage);
+      socket.broadcast.emit("send-mongo-message-to-client", mongoMessage);
     });
 });
 
