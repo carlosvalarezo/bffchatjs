@@ -27,7 +27,6 @@ server.on("connection", socket => {
     socket.on("getMessages", async jwt => {
       try{
         const msgs = await apiClient.getMessages(jwt);
-        socket.emit('latest-messages', msgs.data.status)
       }
       catch(err){
         console.log(err);
